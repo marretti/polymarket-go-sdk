@@ -4,29 +4,21 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/GoPolymarket/polymarket-go-sdk.svg)](https://pkg.go.dev/github.com/GoPolymarket/polymarket-go-sdk)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-## ⭐ Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=GoPolymarket/polymarket-go-sdk&type=Date)](https://www.star-history.com/#GoPolymarket/polymarket-go-sdk&Date)
-
 **Official docs alignment:** Implements Polymarket Order Attribution (builder auth headers for leaderboard/grants) and follows the Builder Authentication/Remote Signing guidance referenced by the Relayer Client docs; official docs: [Order Attribution](https://docs.polymarket.com/developers/builders/order-attribution), [Relayer Client](https://docs.polymarket.com/developers/builders/relayer-client).
 
 An unofficial, production-ready, and feature-complete Go SDK for the Polymarket CLOB (Central Limit Order Book). Designed for high-frequency trading, market making, and data analysis.
 
 > **Note**: This is a community-maintained project and is not officially affiliated with Polymarket. We aim to provide a high-quality, spec-compliant implementation that can be relied upon by professionals.
 
-## ✨ Key Features
+## Current Architecture Snapshot
 
-- **🛡️ Type-Safe & Robust**: Fully typed API responses and requests using standard Go patterns.
-- **🚀 High Performance**: Optimized for low-latency trading with efficient HTTP and WebSocket handling.
-- **🔌 WebSocket Recovery**: Built-in "dead connection" detection and automatic reconnection logic (heartbeat monitoring).
-- **🔐 Secure Authentication**:
-    - Supports L1 (EIP-712) and L2 (HMAC) signing.
-    - **Proxy Wallet & Gnosis Safe**: Deterministic address derivation for smart contract wallets.
-    - **AWS KMS**: Plug-and-play support for enterprise-grade key management.
-- **🧩 Modular Architecture**: Clean separation of concerns (CLOB, Account, Market Data, WebSocket).
-- **🏗️ Builder Attribution**: Easy configuration for builder rewards attribution.
+The SDK is organized as a layered trading foundation:
 
-## 🏗 Architecture
+- **Application layer**: `Client` entry points for CLOB REST, WebSocket, and RTDS workflows.
+- **Execution layer**: `pkg/execution` for place/cancel/query/replay contracts and unified lifecycle state.
+- **Protocol layer**: `pkg/clob`, `pkg/clob/ws`, and `pkg/rtds` for exchange interaction and streams.
+- **Security layer**: `pkg/auth` for EIP-712/HMAC signing, Proxy/Safe/KMS flows, and builder attribution headers.
+- **Transport layer**: `pkg/transport` for retry policy, error normalization, and request shaping.
 
 The SDK is organized into modular packages to ensure maintainability and extensibility:
 
@@ -47,12 +39,30 @@ graph TD
     WS --> Stream[Event Streams]
 ```
 
+### Core Capabilities
+
+- **Type-safe integration surface**: Fully typed requests/responses and predictable error handling.
+- **Realtime resilience**: Built-in heartbeat + reconnect behavior for long-running WebSocket sessions.
+- **Institutional auth support**: EOA, Proxy, Safe, and AWS KMS signer compatibility.
+- **Builder-first integration**: Native order attribution fields and remote signing support.
+- **Low-latency trading paths**: Optimized REST/WS primitives for execution and market data.
+
+### Package Responsibilities
+
 - **`pkg/clob`**: The core client for REST API interactions (Orders, Markets, Account).
 - **`pkg/clob/ws`**: Robust WebSocket client with auto-reconnect and typed event channels.
 - **`pkg/auth`**: Cryptographic primitives for EIP-712 signing and HMAC generation.
 - **`pkg/transport`**: HTTP transport layer handling signing injection, retries, and error parsing.
-- **`pkg/execution`**: Unified execution contract (`Place`/`Cancel`/`Query`/`Replay`), CLOB adapter, normalized lifecycle model (`created`/`accepted`/`partial`/`filled`/`canceled`/`rejected`), deterministic idempotency-key spec (`tenant + strategy + client_order_id`), retry policy standard (network/timeout/HTTP 5xx), WS reconnect/heartbeat policy helpers, and attribution pass-through fields (`builder`/`funder`/`source`).
-- **WS schema compatibility tests**: Added explicit compatibility tests for alias fields (`event_type`/`type`, `bids/asks` + `buys/sells`, `assets_ids` + `asset_ids`) to detect breaking message-shape drifts early.
+- **`pkg/execution`**: Unified execution contract (`Place`/`Cancel`/`Query`/`Replay`) with CLOB adapter bindings.
+
+### Execution Core (Current State)
+
+- **6-state lifecycle model**: `created` -> `accepted` -> `partial` -> `filled`/`canceled`/`rejected`.
+- **Deterministic idempotency**: Canonical key spec (`tenant + strategy + client_order_id`) for replay-safe execution.
+- **Standard retry policy**: Shared handling for network timeout and HTTP `5xx` failure classes.
+- **WS runtime policy helpers**: Reconnect and heartbeat policy primitives for strategy services.
+- **Attribution pass-through**: Execution payload compatibility for `builder`, `funder`, and `source`.
+- **Schema compatibility tests**: Guards for message aliases (`event_type`/`type`, `bids/asks` + `buys/sells`, `assets_ids` + `asset_ids`).
 
 ## 🚀 Installation
 
@@ -360,3 +370,7 @@ Distributed under the Apache License 2.0. See `LICENSE` for more information.
 ---
 
 *This project is an independent effort to provide a high-quality Go ecosystem for Polymarket. If you find it useful, please star the repo!*
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=GoPolymarket/polymarket-go-sdk&type=Date)](https://www.star-history.com/#GoPolymarket/polymarket-go-sdk&Date)
