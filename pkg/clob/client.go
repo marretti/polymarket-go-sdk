@@ -6,12 +6,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/auth"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/clobtypes"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/heartbeat"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/rfq"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/ws"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/types"
+	"github.com/marretti/polymarket-go-sdk/pkg/auth"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/heartbeat"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/rfq"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/ws"
+	"github.com/marretti/polymarket-go-sdk/pkg/types"
 )
 
 // Client defines the primary interface for interacting with the Polymarket CLOB.

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/clobtypes"
 	"context"
 	"fmt"
 	"log"
@@ -9,11 +8,13 @@ import (
 	"strconv"
 	"strings"
 
-	polymarket "github.com/GoPolymarket/polymarket-go-sdk"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/auth"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob"
-	
-"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/rfq"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
+
+	polymarket "github.com/marretti/polymarket-go-sdk"
+	"github.com/marretti/polymarket-go-sdk/pkg/auth"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob"
+
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/rfq"
 )
 
 func main() {

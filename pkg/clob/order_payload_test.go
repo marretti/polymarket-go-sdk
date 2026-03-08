@@ -1,15 +1,16 @@
 package clob
 
 import (
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/clobtypes"
 	"math/big"
 	"strings"
 	"testing"
 
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/shopspring/decimal"
 
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/types"
+	"github.com/marretti/polymarket-go-sdk/pkg/types"
 )
 
 func TestBuildOrderPayloadCasingAndOptions(t *testing.T) {

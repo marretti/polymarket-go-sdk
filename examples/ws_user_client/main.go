@@ -7,10 +7,10 @@ import (
 	"os"
 	"os/signal"
 
-	polymarket "github.com/GoPolymarket/polymarket-go-sdk"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/auth"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/ws"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/gamma"
+	polymarket "github.com/marretti/polymarket-go-sdk"
+	"github.com/marretti/polymarket-go-sdk/pkg/auth"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/ws"
+	"github.com/marretti/polymarket-go-sdk/pkg/gamma"
 )
 
 func main() {

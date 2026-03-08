@@ -1,8 +1,10 @@
 package clob
 
-import "github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/clobtypes"
+import (
+	"context"
 
-import "context"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
+)
 
 // StreamResult wraps a streamed item or an error.
 type StreamResult[T any] struct {

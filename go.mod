@@ -5,7 +5,6 @@ go 1.24.0
 toolchain go1.24.13
 
 require (
-	github.com/GoPolymarket/polymarket-go-sdk v1.0.9
 	github.com/aws/aws-sdk-go-v2/service/kms v1.50.2
 	github.com/ethereum/go-ethereum v1.17.1
 	github.com/gorilla/websocket v1.5.3

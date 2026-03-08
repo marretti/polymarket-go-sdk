@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/clobtypes"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
 )
 
 // LifecycleState is the unified order lifecycle model shared by strategy/runtime layers.

@@ -18,12 +18,12 @@ import (
 	"strings"
 	"time"
 
-	sdkerrors "github.com/GoPolymarket/polymarket-go-sdk/pkg/errors"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/signer/core/apitypes"
+	sdkerrors "github.com/marretti/polymarket-go-sdk/pkg/errors"
 )
 
 // ClobAuthDomain is the EIP-712 domain used for CLOB authentication requests.

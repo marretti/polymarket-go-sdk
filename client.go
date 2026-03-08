@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/auth"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/bridge"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/ws"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/ctf"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/data"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/gamma"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/rtds"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/transport"
+	"github.com/marretti/polymarket-go-sdk/pkg/auth"
+	"github.com/marretti/polymarket-go-sdk/pkg/bridge"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/ws"
+	"github.com/marretti/polymarket-go-sdk/pkg/ctf"
+	"github.com/marretti/polymarket-go-sdk/pkg/data"
+	"github.com/marretti/polymarket-go-sdk/pkg/gamma"
+	"github.com/marretti/polymarket-go-sdk/pkg/rtds"
+	"github.com/marretti/polymarket-go-sdk/pkg/transport"
 )
 
 // Client aggregates service clients behind a shared configuration.

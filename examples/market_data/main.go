@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/heartbeat"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/rfq"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/transport"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/heartbeat"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/rfq"
+	"github.com/marretti/polymarket-go-sdk/pkg/transport"
 )
 
 func main() {

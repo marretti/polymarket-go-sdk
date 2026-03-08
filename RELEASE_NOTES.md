@@ -102,4 +102,4 @@ This release was made possible through comprehensive code review and optimizatio
 
 ---
 
-**Full Changelog**: https://github.com/GoPolymarket/polymarket-go-sdk/compare/a9a3cc8...89b9bed
+**Full Changelog**: https://github.com/marretti/polymarket-go-sdk/compare/a9a3cc8...89b9bed

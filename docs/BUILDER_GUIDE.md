@@ -48,8 +48,8 @@ import (
     "log"
     "os"
 
-    polymarket "github.com/GoPolymarket/polymarket-go-sdk"
-    "github.com/GoPolymarket/polymarket-go-sdk/pkg/auth"
+    polymarket "github.com/marretti/polymarket-go-sdk"
+    "github.com/marretti/polymarket-go-sdk/pkg/auth"
 )
 
 func main() {

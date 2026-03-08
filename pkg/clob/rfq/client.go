@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/transport"
+	"github.com/marretti/polymarket-go-sdk/pkg/transport"
 )
 
 type Client interface {

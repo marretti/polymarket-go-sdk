@@ -7,14 +7,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/auth"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/cloberrors"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/clobtypes"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/heartbeat"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/rfq"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/ws"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/transport"
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/types"
+	"github.com/marretti/polymarket-go-sdk/pkg/auth"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/cloberrors"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/heartbeat"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/rfq"
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/ws"
+	"github.com/marretti/polymarket-go-sdk/pkg/transport"
+	"github.com/marretti/polymarket-go-sdk/pkg/types"
 )
 
 // clientImpl implements the Client interface.

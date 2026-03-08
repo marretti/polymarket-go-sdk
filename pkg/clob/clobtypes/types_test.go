@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/types"
+	"github.com/marretti/polymarket-go-sdk/pkg/types"
 )
 
 func TestOrderTypeConstants(t *testing.T) {
 	tests := []struct {
-		name     string
+		name      string
 		orderType OrderType
-		expected string
+		expected  string
 	}{
 		{"GTC", OrderTypeGTC, "GTC"},
 		{"GTD", OrderTypeGTD, "GTD"},

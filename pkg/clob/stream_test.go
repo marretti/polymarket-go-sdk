@@ -1,9 +1,10 @@
 package clob
 
 import (
-	"github.com/GoPolymarket/polymarket-go-sdk/pkg/clob/clobtypes"
 	"context"
 	"testing"
+
+	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
 )
 
 func TestStreamData(t *testing.T) {
