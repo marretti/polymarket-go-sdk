@@ -322,7 +322,7 @@ type (
 	}
 	PricesHistoryResponse []PriceHistoryPoint
 	OrderResponse         struct {
-		ID           string `json:"orderID"`
+		ID           string `json:"id"`
 		Status       string `json:"status"`
 		AssetID      string `json:"asset_id,omitempty"`
 		Market       string `json:"market,omitempty"`
