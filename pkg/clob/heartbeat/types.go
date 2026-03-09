@@ -5,5 +5,6 @@ type HeartbeatRequest struct {
 }
 
 type HeartbeatResponse struct {
-	Status string `json:"status"`
+	Status      string `json:"status"`
+	HeartbeatID string `json:"heartbeat_id,omitempty"`
 }
