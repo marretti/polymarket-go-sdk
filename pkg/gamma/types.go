@@ -226,11 +226,11 @@ type Market struct {
 	NegRiskRequestID   string  `json:"negRiskRequestId,omitempty"`
 	EnableOrderBook    bool    `json:"enableOrderBook,omitempty"`
 	QuestionID         string  `json:"questionId,omitempty"`
-	Volume24hr         string  `json:"volume24hr,omitempty"`
-	Spread             string  `json:"spread,omitempty"`
-	BestBid            string  `json:"bestBid,omitempty"`
-	BestAsk            string  `json:"bestAsk,omitempty"`
-	LastTradePrice     string  `json:"lastTradePrice,omitempty"`
+	Volume24hr         float64 `json:"volume24hr,omitempty"`
+	Spread             float64 `json:"spread,omitempty"`
+	BestBid            float64 `json:"bestBid,omitempty"`
+	BestAsk            float64 `json:"bestAsk,omitempty"`
+	LastTradePrice     float64 `json:"lastTradePrice,omitempty"`
 	CommentCount       int     `json:"commentCount,omitempty"`
 	Cyom               bool    `json:"cyom,omitempty"`
 }
