@@ -223,7 +223,7 @@ func TestMarket_NegRiskFields(t *testing.T) {
 	if m.Volume24hr != 1000000 {
 		t.Errorf("Volume24hr = %v, want 1000000", m.Volume24hr)
 	}
-	if m.BestBid != "0.48" {
+	if m.BestBid != 0.48 {
 		t.Errorf("BestBid = %s, want 0.48", m.BestBid)
 	}
 	if m.CommentCount != 42 {

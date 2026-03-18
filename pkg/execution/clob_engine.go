@@ -52,6 +52,8 @@ type CancelRequest struct {
 type CancelResponse struct {
 	Status      string
 	Attribution Attribution
+	Canceled    []string
+	NotCanceled []string
 }
 
 // QueryRequest identifies the order to fetch.
@@ -129,7 +131,7 @@ func (e *CLOBEngine) Cancel(ctx context.Context, req CancelRequest) (CancelRespo
 	if err != nil {
 		return CancelResponse{}, err
 	}
-	return CancelResponse{Status: resp.Status, Attribution: attr}, nil
+	return CancelResponse{Status: resp.Status, Canceled: resp.Canceled, NotCanceled: resp.NotCanceled, Attribution: attr}, nil
 }
 
 // Query fetches current order state by order id.
