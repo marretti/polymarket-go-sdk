@@ -237,11 +237,11 @@ type Market struct {
 	CommentCount          int     `json:"commentCount,omitempty"`
 	Cyom                  bool    `json:"cyom,omitempty"`
 	OpenInterest          string  `json:"openInterest,omitempty"`
-	VolumeNum             string  `json:"volumeNum,omitempty"`
+	VolumeNum             float64 `json:"volumeNum,omitempty"`
 	LiquidityNum          float64 `json:"liquidityNum,omitempty"`
-	Volume1wk             int     `json:"volume1wk,omitempty"`
-	Volume1mo             int     `json:"volume1mo,omitempty"`
-	Volume1yr             int     `json:"volume1yr,omitempty"`
+	Volume1wk             float64 `json:"volume1wk,omitempty"`
+	Volume1mo             float64 `json:"volume1mo,omitempty"`
+	Volume1yr             float64 `json:"volume1yr,omitempty"`
 	GameStartTime         string  `json:"gameStartTime,omitempty"`
 	SecondsDelay          int     `json:"secondsDelay,omitempty"`
 	Category              string  `json:"category,omitempty"`
