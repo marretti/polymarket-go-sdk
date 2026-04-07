@@ -36,7 +36,7 @@ func (s *stubClient) TickSize(ctx context.Context, req *clobtypes.TickSizeReques
 }
 
 func (s *stubClient) FeeRate(ctx context.Context, req *clobtypes.FeeRateRequest) (clobtypes.FeeRateResponse, error) {
-	return clobtypes.FeeRateResponse{BaseFee: int(s.feeRate)}, nil
+	return clobtypes.FeeRateResponse{BaseFee: s.feeRate}, nil
 }
 
 func (s *stubClient) Orders(ctx context.Context, req *clobtypes.OrdersRequest) (clobtypes.OrdersResponse, error) {

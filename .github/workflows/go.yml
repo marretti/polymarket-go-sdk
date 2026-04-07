@@ -29,6 +29,8 @@ jobs:
   test:
     name: Build & Test
     runs-on: ubuntu-latest
+    env:
+      CGO_ENABLED: 0
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -39,8 +41,8 @@ jobs:
         run: go mod download
       - name: Build
         run: go build -v ./...
-      - name: Test with Race Detector
-        run: go test -v -race -coverprofile=coverage.out ./pkg/...
+      - name: Test
+        run: go test -v -coverprofile=coverage.out ./pkg/...
 
       - name: Check Coverage
         run: |

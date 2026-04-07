@@ -345,7 +345,7 @@ func (c *clientImpl) FeeRate(ctx context.Context, req *clobtypes.FeeRateRequest)
 		c.cache.mu.RLock()
 		if cached, ok := c.cache.feeRates[req.TokenID]; ok {
 			c.cache.mu.RUnlock()
-			return clobtypes.FeeRateResponse{BaseFee: int(cached)}, nil
+			return clobtypes.FeeRateResponse{BaseFee: cached}, nil
 		}
 		c.cache.mu.RUnlock()
 	}
@@ -372,7 +372,7 @@ func (c *clientImpl) FeeRateByPath(ctx context.Context, tokenID string) (clobtyp
 		c.cache.mu.RLock()
 		if cached, ok := c.cache.feeRates[tokenID]; ok {
 			c.cache.mu.RUnlock()
-			return clobtypes.FeeRateResponse{BaseFee: int(cached)}, nil
+			return clobtypes.FeeRateResponse{BaseFee: cached}, nil
 		}
 		c.cache.mu.RUnlock()
 	}

@@ -314,7 +314,7 @@ func TestPricesHistoryResponse_UnmarshalJSON_HistoryPriority(t *testing.T) {
 
 func TestOrderBook_JSON(t *testing.T) {
 	orderBook := OrderBook{
-		MarketID: "market123",
+		Market: "market123",
 		Bids: []PriceLevel{
 			{Price: "0.5", Size: "100"},
 			{Price: "0.4", Size: "200"},
@@ -336,8 +336,8 @@ func TestOrderBook_JSON(t *testing.T) {
 		t.Fatalf("Unmarshal error: %v", err)
 	}
 
-	if decoded.MarketID != orderBook.MarketID {
-		t.Errorf("MarketID = %s, want %s", decoded.MarketID, orderBook.MarketID)
+	if decoded.Market != orderBook.Market {
+		t.Errorf("MarketID = %s, want %s", decoded.Market, orderBook.Market)
 	}
 	if len(decoded.Bids) != len(orderBook.Bids) {
 		t.Errorf("Bids length = %d, want %d", len(decoded.Bids), len(orderBook.Bids))
