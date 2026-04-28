@@ -73,14 +73,11 @@ func TestBuildRFQAcceptRequestFromSignedOrder(t *testing.T) {
 			Salt:        types.U256{Int: big.NewInt(1)},
 			Maker:       common.HexToAddress("0x0000000000000000000000000000000000000001"),
 			Signer:      common.HexToAddress("0x0000000000000000000000000000000000000002"),
-			Taker:       common.HexToAddress("0x0000000000000000000000000000000000000000"),
 			TokenID:     types.U256{Int: big.NewInt(123)},
 			MakerAmount: decimal.NewFromInt(100),
 			TakerAmount: decimal.NewFromInt(50),
 			Side:        "BUY",
-			Expiration:  types.U256{Int: big.NewInt(0)},
-			FeeRateBps:  decimal.NewFromInt(0),
-			Nonce:       types.U256{Int: big.NewInt(10)},
+			Timestamp:   10,
 		},
 		Signature: "0xsig",
 		Owner:     "owner",
@@ -94,7 +91,7 @@ func TestBuildRFQAcceptRequestFromSignedOrder(t *testing.T) {
 		t.Fatalf("request/quote IDs mismatch")
 	}
 	if req.TokenID != "123" || req.Nonce != "10" {
-		t.Fatalf("order fields mismatch: token=%s nonce=%s", req.TokenID, req.Nonce)
+		t.Fatalf("order fields mismatch: token=%s nonce(=timestamp ms)=%s", req.TokenID, req.Nonce)
 	}
 }
 
@@ -141,7 +138,6 @@ func TestBuildRFQAcceptRequest_NilTokenID(t *testing.T) {
 	signed := &clobtypes.SignedOrder{
 		Order: clobtypes.Order{
 			TokenID: types.U256{},
-			Nonce:   types.U256{Int: big.NewInt(1)},
 			Salt:    types.U256{Int: big.NewInt(1)},
 		},
 		Signature: "sig",
@@ -153,20 +149,17 @@ func TestBuildRFQAcceptRequest_NilTokenID(t *testing.T) {
 	}
 }
 
-func TestBuildRFQAcceptRequest_NilExpiration(t *testing.T) {
+func TestBuildRFQAcceptRequest_ExpirationFieldZero(t *testing.T) {
 	signed := &clobtypes.SignedOrder{
 		Order: clobtypes.Order{
 			Salt:        types.U256{Int: big.NewInt(1)},
 			Maker:       common.HexToAddress("0x0000000000000000000000000000000000000001"),
 			Signer:      common.HexToAddress("0x0000000000000000000000000000000000000002"),
-			Taker:       common.HexToAddress("0x0000000000000000000000000000000000000000"),
 			TokenID:     types.U256{Int: big.NewInt(123)},
 			MakerAmount: decimal.NewFromInt(100),
 			TakerAmount: decimal.NewFromInt(50),
 			Side:        "BUY",
-			Expiration:  types.U256{}, // nil Int
-			FeeRateBps:  decimal.NewFromInt(0),
-			Nonce:       types.U256{Int: big.NewInt(10)},
+			Timestamp:   10,
 		},
 		Signature: "0xsig",
 		Owner:     "owner",
@@ -186,14 +179,11 @@ func TestBuildRFQApproveQuoteFromSignedOrder(t *testing.T) {
 			Salt:        types.U256{Int: big.NewInt(1)},
 			Maker:       common.HexToAddress("0x0000000000000000000000000000000000000001"),
 			Signer:      common.HexToAddress("0x0000000000000000000000000000000000000002"),
-			Taker:       common.HexToAddress("0x0000000000000000000000000000000000000000"),
 			TokenID:     types.U256{Int: big.NewInt(123)},
 			MakerAmount: decimal.NewFromInt(100),
 			TakerAmount: decimal.NewFromInt(50),
 			Side:        "BUY",
-			Expiration:  types.U256{Int: big.NewInt(999)},
-			FeeRateBps:  decimal.NewFromInt(0),
-			Nonce:       types.U256{Int: big.NewInt(10)},
+			Timestamp:   10,
 		},
 		Signature: "0xsig",
 		Owner:     "owner",
@@ -205,8 +195,8 @@ func TestBuildRFQApproveQuoteFromSignedOrder(t *testing.T) {
 	if req.RequestID != "r1" || req.QuoteIDV2 != "q1" {
 		t.Fatalf("IDs mismatch")
 	}
-	if req.Expiration != "999" {
-		t.Fatalf("expected expiration 999, got %s", req.Expiration)
+	if req.Expiration != "0" {
+		t.Fatalf("expected legacy expiration field 0, got %s", req.Expiration)
 	}
 	if req.TokenID != "123" {
 		t.Fatalf("expected tokenID 123, got %s", req.TokenID)
@@ -241,19 +231,19 @@ func TestBuildRFQApproveQuote_EmptyOwner(t *testing.T) {
 	}
 }
 
-func TestBuildRFQApproveQuote_NilNonce(t *testing.T) {
+func TestBuildRFQApproveQuote_NilSalt(t *testing.T) {
 	signed := &clobtypes.SignedOrder{
 		Order: clobtypes.Order{
-			TokenID: types.U256{Int: big.NewInt(1)},
-			Nonce:   types.U256{},
-			Salt:    types.U256{Int: big.NewInt(1)},
+			TokenID:   types.U256{Int: big.NewInt(1)},
+			Salt:      types.U256{},
+			Timestamp: 1,
 		},
 		Signature: "sig",
 		Owner:     "owner",
 	}
 	_, err := BuildRFQApproveQuoteFromSignedOrder("r1", "q1", signed)
 	if err == nil {
-		t.Fatal("expected error for nil nonce")
+		t.Fatal("expected error for nil salt")
 	}
 }
 

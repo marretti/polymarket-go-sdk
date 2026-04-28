@@ -56,11 +56,10 @@ func main() {
 	fmt.Printf("Salt: %s\n", order.Salt.Int.String())
 	fmt.Printf("Signer: %s\n", order.Signer.String())
 	fmt.Printf("Maker: %s\n", order.Maker.String())
-	fmt.Printf("Taker: %s\n", order.Taker.String())
 	fmt.Printf("TokenID: %s\n", order.TokenID.Int.String())
 	fmt.Printf("MakerAmount: %s\n", order.MakerAmount.String())
 	fmt.Printf("TakerAmount: %s\n", order.TakerAmount.String())
-	fmt.Printf("Expiration: %s\n", order.Expiration.Int.String())
+	fmt.Printf("Timestamp(ms): %d\n", order.Timestamp)
 	fmt.Printf("Side: %s\n", order.Side)
 	fmt.Printf("SignatureType: %d\n", *order.SignatureType)
 
@@ -78,10 +77,9 @@ func main() {
 		fmt.Println("SUCCESS: Salt is generated.")
 	}
 
-	// Verify Expiration is set (0 for GTC)
-	if order.Expiration.Int == nil {
-		log.Fatalf("Error: Expiration is nil")
+	if order.Timestamp == 0 {
+		log.Fatalf("Error: Timestamp is zero")
 	} else {
-		fmt.Println("SUCCESS: Expiration is set.")
+		fmt.Println("SUCCESS: Timestamp is set (CLOB v2).")
 	}
 }

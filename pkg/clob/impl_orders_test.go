@@ -212,6 +212,7 @@ func TestSignOrderDefaults(t *testing.T) {
 		signatureType: auth.SignatureProxy,
 		funder:        &funder,
 		saltGenerator: func() (*big.Int, error) { return big.NewInt(7), nil },
+		cache:         newClientCache(),
 	}
 
 	order := &clobtypes.Order{
@@ -219,11 +220,8 @@ func TestSignOrderDefaults(t *testing.T) {
 		TokenID:     types.U256{Int: big.NewInt(1)},
 		MakerAmount: decimal.NewFromInt(10),
 		TakerAmount: decimal.NewFromInt(5),
-		FeeRateBps:  decimal.NewFromInt(0),
-		Nonce:       types.U256{Int: big.NewInt(1)},
-		Expiration:  types.U256{Int: big.NewInt(0)},
-		Taker:       common.Address{},
 		Signer:      signer.Address(),
+		Timestamp:   1,
 	}
 
 	signed, err := client.signOrder(order)

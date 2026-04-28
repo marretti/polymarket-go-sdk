@@ -16,7 +16,7 @@ func TestClientInitializationAndOptions(t *testing.T) {
 
 	t.Run("Health", func(t *testing.T) {
 		doer := &staticDoer{
-			responses: map[string]string{"/": `"OK"`},
+			responses: map[string]string{"/time": `1700000000`},
 		}
 		client := NewClient(transport.NewClient(doer, "http://example"))
 		status, err := client.Health(ctx)

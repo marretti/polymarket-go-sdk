@@ -301,12 +301,18 @@ type BuilderRemoteConfig struct {
 type BuilderConfig struct {
 	Local  *BuilderCredentials
 	Remote *BuilderRemoteConfig
+	// Code is an optional 0x-prefixed 32-byte builder code for CLOB v2 (bytes32 on the signed order).
+	// When set, legacy POLY_BUILDER_* HMAC headers are not used; attribution is on-chain in the order.
+	Code string
 }
 
 // IsValid returns true if the configuration has sufficient credentials.
 func (c *BuilderConfig) IsValid() bool {
 	if c == nil {
 		return false
+	}
+	if strings.TrimSpace(c.Code) != "" {
+		return true
 	}
 	if c.Local != nil {
 		return c.Local.Key != "" && c.Local.Secret != "" && c.Local.Passphrase != ""
@@ -317,10 +323,31 @@ func (c *BuilderConfig) IsValid() bool {
 	return false
 }
 
+// UseHMACBuilderHeaders reports whether legacy POLY_BUILDER_* HMAC headers should be attached.
+// CLOB v2 uses Code on the signed order instead; when Code is non-empty, this is always false.
+func (c *BuilderConfig) UseHMACBuilderHeaders() bool {
+	if c == nil {
+		return false
+	}
+	if strings.TrimSpace(c.Code) != "" {
+		return false
+	}
+	if c.Local != nil && c.Local.Key != "" && c.Local.Secret != "" && c.Local.Passphrase != "" {
+		return true
+	}
+	if c.Remote != nil && c.Remote.Host != "" {
+		return true
+	}
+	return false
+}
+
 // Headers returns the attribution headers for a given request.
 func (c *BuilderConfig) Headers(ctx context.Context, method, path string, body *string, timestamp int64) (http.Header, error) {
 	if c == nil {
 		return nil, ErrMissingBuilderConfig
+	}
+	if strings.TrimSpace(c.Code) != "" && c.Local == nil && c.Remote == nil {
+		return nil, fmt.Errorf("auth: CLOB v2 builder Code is set; use the order builder field, not HMAC headers")
 	}
 	if c.Local != nil {
 		return buildBuilderHeadersLocal(c.Local, method, path, body, timestamp)

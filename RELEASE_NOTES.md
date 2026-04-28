@@ -1,5 +1,9 @@
 # Release Notes
 
+## v1.2.0-beta.7 (pending)
+
+- **CLOB heartbeat**: `pkg/clob/heartbeat` now uses **`GET /time`** (transport, `dest nil`) instead of `POST /v1/heartbeats`, matching current CLOB behaviour for keep-alive.
+
 ## Version 0.x.x (2026-02-10)
 
 ### 🔧 Critical Bug Fixes

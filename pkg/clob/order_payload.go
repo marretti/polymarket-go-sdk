@@ -2,6 +2,7 @@ package clob
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
@@ -81,15 +82,14 @@ func orderWithSignature(order *clobtypes.SignedOrder) (map[string]interface{}, e
 		"salt":          salt,
 		"maker":         order.Order.Maker.Hex(),
 		"signer":        order.Order.Signer.Hex(),
-		"taker":         order.Order.Taker.Hex(),
 		"tokenId":       u256String(order.Order.TokenID),
 		"makerAmount":   decimalString(order.Order.MakerAmount),
 		"takerAmount":   decimalString(order.Order.TakerAmount),
 		"side":          side,
-		"expiration":    u256String(order.Order.Expiration),
-		"nonce":         u256String(order.Order.Nonce),
-		"feeRateBps":    decimalString(order.Order.FeeRateBps),
 		"signatureType": sigType,
+		"timestamp":     strconv.FormatInt(order.Order.Timestamp, 10),
+		"metadata":      order.Order.Metadata.Hex(),
+		"builder":       order.Order.Builder.Hex(),
 		"signature":     order.Signature,
 	}, nil
 }

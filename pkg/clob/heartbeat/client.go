@@ -19,13 +19,8 @@ func NewClient(httpClient *transport.Client) Client {
 }
 
 func (c *clientImpl) Heartbeat(ctx context.Context, req *HeartbeatRequest) (HeartbeatResponse, error) {
-	var resp HeartbeatResponse
-	var body interface{}
-	if req != nil && req.HeartbeatID != "" {
-		body = map[string]string{"heartbeat_id": req.HeartbeatID}
-	} else {
-		body = map[string]interface{}{"heartbeat_id": nil}
-	}
-	err := c.httpClient.Post(ctx, "/v1/heartbeats", body, &resp)
-	return resp, err
+	// Keep-alive: GET /time (server unix time as JSON number or plain body). req is ignored for this route.
+	_ = req
+	err := c.httpClient.Get(ctx, "/time", nil, nil)
+	return HeartbeatResponse{}, err
 }

@@ -3,6 +3,7 @@ package rfq
 import (
 	"fmt"
 	"math/big"
+	"strconv"
 
 	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
 
@@ -56,13 +57,13 @@ func BuildRFQAcceptRequestFromSignedOrder(requestID, quoteID string, signed *clo
 	}
 
 	order := signed.Order
-	if order.TokenID.Int == nil || order.Nonce.Int == nil || order.Salt.Int == nil {
-		return nil, fmt.Errorf("order token/nonce/salt are required")
+	if order.TokenID.Int == nil || order.Salt.Int == nil {
+		return nil, fmt.Errorf("order token/salt are required")
 	}
 
-	expiration := "0"
-	if order.Expiration.Int != nil {
-		expiration = order.Expiration.Int.String()
+	tsStr := "0"
+	if order.Timestamp != 0 {
+		tsStr = strconv.FormatInt(order.Timestamp, 10)
 	}
 
 	req := &RFQAcceptRequest{
@@ -74,11 +75,11 @@ func BuildRFQAcceptRequestFromSignedOrder(requestID, quoteID string, signed *clo
 		TokenID:     order.TokenID.Int.String(),
 		Maker:       order.Maker.Hex(),
 		Signer:      order.Signer.Hex(),
-		Taker:       order.Taker.Hex(),
-		Nonce:       order.Nonce.Int.String(),
-		Expiration:  expiration,
+		Taker:       common.Address{}.Hex(),
+		Nonce:       tsStr,
+		Expiration:  "0",
 		Side:        order.Side,
-		FeeRateBps:  order.FeeRateBps.String(),
+		FeeRateBps:  "0",
 		Signature:   signed.Signature,
 		Salt:        order.Salt.Int.String(),
 		Owner:       signed.Owner,
@@ -102,13 +103,13 @@ func BuildRFQApproveQuoteFromSignedOrder(requestID, quoteID string, signed *clob
 	}
 
 	order := signed.Order
-	if order.TokenID.Int == nil || order.Nonce.Int == nil || order.Salt.Int == nil {
-		return nil, fmt.Errorf("order token/nonce/salt are required")
+	if order.TokenID.Int == nil || order.Salt.Int == nil {
+		return nil, fmt.Errorf("order token/salt are required")
 	}
 
-	expiration := "0"
-	if order.Expiration.Int != nil {
-		expiration = order.Expiration.Int.String()
+	tsStr := "0"
+	if order.Timestamp != 0 {
+		tsStr = strconv.FormatInt(order.Timestamp, 10)
 	}
 
 	req := &RFQApproveQuote{
@@ -120,11 +121,11 @@ func BuildRFQApproveQuoteFromSignedOrder(requestID, quoteID string, signed *clob
 		TokenID:     order.TokenID.Int.String(),
 		Maker:       order.Maker.Hex(),
 		Signer:      order.Signer.Hex(),
-		Taker:       order.Taker.Hex(),
-		Nonce:       order.Nonce.Int.String(),
-		Expiration:  expiration,
+		Taker:       common.Address{}.Hex(),
+		Nonce:       tsStr,
+		Expiration:  "0",
 		Side:        order.Side,
-		FeeRateBps:  order.FeeRateBps.String(),
+		FeeRateBps:  "0",
 		Signature:   signed.Signature,
 		Salt:        order.Salt.Int.String(),
 		Owner:       signed.Owner,

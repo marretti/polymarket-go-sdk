@@ -25,7 +25,7 @@ func (d *staticDoer) Do(req *http.Request) (*http.Response, error) {
 
 func TestHeartbeat(t *testing.T) {
 	doer := &staticDoer{
-		responses: map[string]string{"/v1/heartbeats": `{"status":"OK"}`},
+		responses: map[string]string{"/time": `1777381577`},
 	}
 	client := NewClient(transport.NewClient(doer, "http://example"))
 	_, err := client.Heartbeat(context.Background(), nil)

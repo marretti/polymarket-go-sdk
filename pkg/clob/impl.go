@@ -1,12 +1,11 @@
 package clob
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"sync"
 	"time"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/marretti/polymarket-go-sdk/pkg/auth"
 	"github.com/marretti/polymarket-go-sdk/pkg/clob/cloberrors"
 	"github.com/marretti/polymarket-go-sdk/pkg/clob/clobtypes"
@@ -375,40 +374,17 @@ func (c *clientImpl) startHeartbeats() {
 }
 
 func (c *clientImpl) Health(ctx context.Context) (string, error) {
-	var resp healthResponse
-	err := c.httpClient.Get(ctx, "/", nil, &resp)
+	// CLOB v2 (e.g. clob-v2.polymarket.com) returns 404 for GET /. /time is supported on
+	// v1 and v2 and indicates the service is up.
+	var ts int64
+	err := c.httpClient.Get(ctx, "/time", nil, &ts)
 	if err != nil {
 		return "DOWN", mapError(err)
 	}
-	return string(resp), nil
-}
-
-type healthResponse string
-
-func (h *healthResponse) UnmarshalJSON(data []byte) error {
-	trimmed := bytes.TrimSpace(data)
-	if len(trimmed) == 0 || bytes.Equal(trimmed, []byte("null")) {
-		*h = ""
-		return nil
+	if ts == 0 {
+		return "DOWN", nil
 	}
-	var status string
-	if err := json.Unmarshal(trimmed, &status); err == nil {
-		*h = healthResponse(status)
-		return nil
-	}
-	var payload struct {
-		Status string `json:"status"`
-		Data   string `json:"data"`
-	}
-	if err := json.Unmarshal(trimmed, &payload); err != nil {
-		return err
-	}
-	if payload.Status != "" {
-		*h = healthResponse(payload.Status)
-		return nil
-	}
-	*h = healthResponse(payload.Data)
-	return nil
+	return "OK", nil
 }
 
 func (c *clientImpl) Time(ctx context.Context) (clobtypes.TimeResponse, error) {
@@ -483,4 +459,15 @@ func mapError(err error) error {
 		return cloberrors.FromTypeErr(apiErr)
 	}
 	return err
+}
+
+func (c *clientImpl) builderV2Field() common.Hash {
+	if c == nil || c.builderCfg == nil {
+		return common.Hash{}
+	}
+	h, err := parseBuilderCodeString(c.builderCfg.Code)
+	if err != nil {
+		return common.Hash{}
+	}
+	return h
 }

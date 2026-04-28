@@ -75,16 +75,15 @@ func main() {
 	order := &clobtypes.Order{
 		Maker:         signable.Order.Maker,
 		Signer:        signer.Address(),
-		Taker:         common.Address{},
 		TokenID:       types.U256{Int: big.NewInt(123456)},
 		MakerAmount:   signable.Order.MakerAmount,
 		TakerAmount:   signable.Order.TakerAmount,
-		Expiration:    signable.Order.Expiration,
-		Nonce:         signable.Order.Nonce,
-		FeeRateBps:    signable.Order.FeeRateBps,
 		Side:          signable.Order.Side,
 		SignatureType: signable.Order.SignatureType,
 		Salt:          signable.Order.Salt,
+		Timestamp:     signable.Order.Timestamp,
+		Metadata:      signable.Order.Metadata,
+		Builder:       signable.Order.Builder,
 	}
 	fmt.Printf("Order side: %s, maker=%s\n", order.Side, order.Maker.String())
 }

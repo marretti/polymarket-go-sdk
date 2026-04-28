@@ -55,7 +55,7 @@ type Client interface {
 
 	// -- System Status --
 
-	// Health returns the current health status of the CLOB API.
+	// Health returns whether the CLOB API is reachable (probes GET /time; "OK" or "DOWN").
 	Health(ctx context.Context) (string, error)
 	// Time retrieves the current server time from the exchange.
 	Time(ctx context.Context) (clobtypes.TimeResponse, error)

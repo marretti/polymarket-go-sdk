@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/marretti/polymarket-go-sdk/pkg/types"
 )
 
@@ -135,6 +138,9 @@ type (
 		Order     Order  `json:"order"`
 		Signature string `json:"signature"`
 		Owner     string `json:"owner"`
+		// FeeRateBps is legacy; POST /order no longer includes top-level fee_rate_bps for CLOB v2.
+		// Kept for callers that still set it; it is ignored when building the wire payload.
+		FeeRateBps string `json:"-"`
 
 		// Options used when submitting the order (not serialized directly).
 		OrderType OrderType `json:"-"`
@@ -478,20 +484,24 @@ type (
 		Size  string `json:"size"`
 	}
 
+	// Order is the CTF Exchange order for CLOB v2 (EIP-712).
+	// See: https://docs.polymarket.com/v2-migration
 	Order struct {
-		// Define order fields
 		Salt          types.U256    `json:"salt"`
 		Signer        types.Address `json:"signer"`
 		Maker         types.Address `json:"maker"`
-		Taker         types.Address `json:"taker"`
 		TokenID       types.U256    `json:"token_id"`
 		MakerAmount   types.Decimal `json:"maker_amount"`
 		TakerAmount   types.Decimal `json:"taker_amount"`
-		Expiration    types.U256    `json:"expiration"`
-		Side          string        `json:"side"` // BUY/SELL
-		FeeRateBps    types.Decimal `json:"fee_rate_bps"`
-		Nonce         types.U256    `json:"nonce"`
+		Side          string        `json:"side"`                     // BUY/SELL
 		SignatureType *int          `json:"signature_type,omitempty"` // 0=EOA, 1=Proxy, 2=Safe
+		// Timestamp is Unix time in milliseconds; signed as uint256 (order uniqueness, not expiry).
+		Timestamp int64 `json:"-"`
+		// Metadata and Builder are EIP-712 bytes32 fields; zero for normal orders.
+		Metadata common.Hash `json:"-"`
+		Builder  common.Hash `json:"-"`
+		// NegRisk selects the neg-risk exchange verifying contract for EIP-712 when not using client cache; ignored when nil.
+		NegRisk *bool `json:"-"`
 	}
 
 	PriceHistoryPoint struct {
@@ -630,6 +640,67 @@ type (
 		Type   string `json:"type"`
 	}
 )
+
+type balanceAllowanceWire struct {
+	Balance    interface{}       `json:"balance"`
+	Allowances map[string]string `json:"allowances"`
+	Allowance  string            `json:"allowance"`
+}
+
+func normalizeBalanceString(v interface{}) string {
+	if v == nil {
+		return ""
+	}
+	switch t := v.(type) {
+	case string:
+		return strings.TrimSpace(t)
+	case json.Number:
+		return t.String()
+	case float64:
+		return strconv.FormatInt(int64(t), 10)
+	case int64:
+		return strconv.FormatInt(t, 10)
+	default:
+		return strings.TrimSpace(fmt.Sprint(t))
+	}
+}
+
+// UnmarshalJSON decodes CLOB /balance-allowance payloads where balance may be a JSON string
+// or number, and the body may be wrapped in {"data":{...}}.
+func (b *BalanceAllowanceResponse) UnmarshalJSON(data []byte) error {
+	trimmed := bytes.TrimSpace(data)
+	if len(trimmed) == 0 || bytes.Equal(trimmed, []byte("null")) {
+		return nil
+	}
+	var outer struct {
+		Data json.RawMessage `json:"data"`
+	}
+	if err := json.Unmarshal(trimmed, &outer); err == nil && len(bytes.TrimSpace(outer.Data)) > 0 {
+		var inner balanceAllowanceWire
+		if err := json.Unmarshal(outer.Data, &inner); err == nil {
+			b.Balance = normalizeBalanceString(inner.Balance)
+			b.Allowances = inner.Allowances
+			b.Allowance = inner.Allowance
+			if b.Allowances == nil {
+				b.Allowances = make(map[string]string)
+			}
+			return nil
+		}
+	}
+	dec := json.NewDecoder(bytes.NewReader(trimmed))
+	dec.UseNumber()
+	var wire balanceAllowanceWire
+	if err := dec.Decode(&wire); err != nil {
+		return err
+	}
+	b.Balance = normalizeBalanceString(wire.Balance)
+	b.Allowances = wire.Allowances
+	b.Allowance = wire.Allowance
+	if b.Allowances == nil {
+		b.Allowances = make(map[string]string)
+	}
+	return nil
+}
 
 // PricesHistoryResponse supports both legacy array responses and the current
 // object-wrapped form returned by the API (e.g. {"history":[...]}).

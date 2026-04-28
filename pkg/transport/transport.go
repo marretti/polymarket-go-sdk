@@ -295,7 +295,7 @@ func (c *Client) doCall(ctx context.Context, method, path string, query url.Valu
 			req.Header.Set(auth.HeaderPolyTimestamp, fmt.Sprintf("%d", ts))
 			req.Header.Set(auth.HeaderPolySignature, sig)
 
-			if c.builder != nil && c.builder.IsValid() {
+			if c.builder != nil && c.builder.UseHMACBuilderHeaders() {
 				builderHeaders, err := c.builder.Headers(ctx, method, signPath, serialized, ts)
 				if err != nil {
 					return fmt.Errorf("failed to build builder headers: %w", err)
@@ -347,6 +347,11 @@ func (c *Client) doCall(ctx context.Context, method, path string, query url.Valu
 
 		// Unmarshal success response
 		if dest != nil {
+			trimmed := bytes.TrimSpace(respBytes)
+			if len(trimmed) == 0 || bytes.Equal(trimmed, []byte("null")) {
+				// e.g. GET /balance-allowance/update returns 200 with an empty body
+				return nil
+			}
 			if err := json.Unmarshal(respBytes, dest); err != nil {
 				return fmt.Errorf("failed to unmarshal response: %w", err)
 			}

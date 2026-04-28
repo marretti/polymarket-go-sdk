@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"strings"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/shopspring/decimal"
@@ -311,11 +312,6 @@ func (b *OrderBuilder) BuildMarketWithContext(ctx context.Context) (*clobtypes.S
 		return nil, fmt.Errorf("price %s is out of bounds for tick size %s", price.String(), tickSize.String())
 	}
 
-	feeRateBps, err := b.resolveFeeRateBps(ctx, b.tokenID)
-	if err != nil {
-		return nil, err
-	}
-
 	truncScale := tickScale + lotSizeScale
 	rawAmount := b.amount.value
 	var makerAmount, takerAmount decimal.Decimal
@@ -361,34 +357,24 @@ func (b *OrderBuilder) BuildMarketWithContext(ctx context.Context) (*clobtypes.S
 		maker = derived
 	}
 
-	taker := common.HexToAddress("0x0000000000000000000000000000000000000000")
-	if b.taker != nil {
-		taker = *b.taker
-	}
-
-	nonce := big.NewInt(0)
-	if b.nonce != nil {
-		nonce = b.nonce
-	}
-
 	salt, err := b.generateSalt()
 	if err != nil {
 		return nil, err
 	}
 
+	meta, bld := b.v2MetadataAndBuilder()
 	order := &clobtypes.Order{
 		Salt:          types.U256{Int: salt},
 		Signer:        b.signer.Address(),
 		Maker:         maker,
-		Taker:         taker,
 		TokenID:       types.U256{Int: tokenIDInt},
 		MakerAmount:   types.Decimal(makerFixed),
 		TakerAmount:   types.Decimal(takerFixed),
-		Expiration:    types.U256{Int: big.NewInt(0)},
 		Side:          side,
-		FeeRateBps:    types.Decimal(decimal.NewFromInt(feeRateBps)),
-		Nonce:         types.U256{Int: nonce},
 		SignatureType: &sigType,
+		Timestamp:     time.Now().UnixMilli(),
+		Metadata:      meta,
+		Builder:       bld,
 	}
 
 	return &clobtypes.SignableOrder{
@@ -443,11 +429,6 @@ func (b *OrderBuilder) buildLimit(ctx context.Context) (*clobtypes.Order, error)
 		return nil, fmt.Errorf("size must be positive")
 	}
 
-	feeRateBps, err := b.resolveFeeRateBps(ctx, b.tokenID)
-	if err != nil {
-		return nil, err
-	}
-
 	truncScale := tickScale + lotSizeScale
 	var makerAmount, takerAmount decimal.Decimal
 	if side == "BUY" {
@@ -485,41 +466,37 @@ func (b *OrderBuilder) buildLimit(ctx context.Context) (*clobtypes.Order, error)
 		maker = derived
 	}
 
-	taker := common.HexToAddress("0x0000000000000000000000000000000000000000")
-	if b.taker != nil {
-		taker = *b.taker
-	}
-
-	nonce := big.NewInt(0)
-	if b.nonce != nil {
-		nonce = b.nonce
-	}
-
 	salt, err := b.generateSalt()
 	if err != nil {
 		return nil, err
 	}
 
-	expiration := big.NewInt(0)
 	if b.expiration != nil {
+		// GTD: signed order in CLOB v2 has no on-chain expiration field; use GTD via orderType when posting.
 		if b.expiration.Sign() < 0 {
 			return nil, fmt.Errorf("expiration must be non-negative")
 		}
-		expiration = b.expiration
 	}
 
+	meta, bld := b.v2MetadataAndBuilder()
 	return &clobtypes.Order{
 		Salt:          types.U256{Int: salt},
 		Signer:        b.signer.Address(),
 		Maker:         maker,
-		Taker:         taker,
 		TokenID:       types.U256{Int: tokenIDInt},
 		MakerAmount:   types.Decimal(makerFixed),
 		TakerAmount:   types.Decimal(takerFixed),
-		Expiration:    types.U256{Int: expiration},
 		Side:          side,
-		FeeRateBps:    types.Decimal(decimal.NewFromInt(feeRateBps)),
-		Nonce:         types.U256{Int: nonce},
 		SignatureType: &sigType,
+		Timestamp:     time.Now().UnixMilli(),
+		Metadata:      meta,
+		Builder:       bld,
 	}, nil
+}
+
+func (b *OrderBuilder) v2MetadataAndBuilder() (metadata, builder common.Hash) {
+	if impl, ok := b.client.(*clientImpl); ok {
+		return common.Hash{}, impl.builderV2Field()
+	}
+	return common.Hash{}, common.Hash{}
 }

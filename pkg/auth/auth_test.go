@@ -204,6 +204,14 @@ func TestBuilderConfig(t *testing.T) {
 		t.Error("local config should be valid")
 	}
 
+	v2only := &BuilderConfig{Code: "0x0000000000000000000000000000000000000000000000000000000000000001"}
+	if !v2only.IsValid() {
+		t.Error("v2 builder code-only config should be valid")
+	}
+	if v2only.UseHMACBuilderHeaders() {
+		t.Error("v2 code-only should not use HMAC builder headers")
+	}
+
 	remote := &BuilderConfig{
 		Remote: &BuilderRemoteConfig{
 			Host: "http://localhost",

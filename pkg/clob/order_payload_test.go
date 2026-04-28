@@ -20,15 +20,12 @@ func TestBuildOrderPayloadCasingAndOptions(t *testing.T) {
 			Salt:          types.U256{Int: big.NewInt(1)},
 			Maker:         common.HexToAddress("0x0000000000000000000000000000000000000001"),
 			Signer:        common.HexToAddress("0x0000000000000000000000000000000000000002"),
-			Taker:         common.HexToAddress("0x0000000000000000000000000000000000000000"),
 			TokenID:       types.U256{Int: big.NewInt(123)},
 			MakerAmount:   decimal.NewFromInt(100),
 			TakerAmount:   decimal.NewFromInt(50),
 			Side:          "BUY",
-			Expiration:    types.U256{Int: big.NewInt(0)},
-			FeeRateBps:    decimal.NewFromInt(0),
-			Nonce:         types.U256{Int: big.NewInt(0)},
 			SignatureType: &sigType,
+			Timestamp:     1713398400000,
 		},
 		Signature: "0xsig",
 		Owner:     "builder-owner",
@@ -46,6 +43,9 @@ func TestBuildOrderPayloadCasingAndOptions(t *testing.T) {
 	}
 	if got := payload["orderType"]; got != clobtypes.OrderTypeGTC {
 		t.Fatalf("orderType mismatch: got %v", got)
+	}
+	if _, ok := payload["fee_rate_bps"]; ok {
+		t.Fatalf("fee_rate_bps must not appear in POST /order body (CLOB v2)")
 	}
 
 	orderMap, ok := payload["order"].(map[string]interface{})
@@ -70,15 +70,12 @@ func TestBuildOrderPayloadPostOnlyValidation(t *testing.T) {
 			Salt:          types.U256{Int: big.NewInt(1)},
 			Maker:         common.HexToAddress("0x0000000000000000000000000000000000000001"),
 			Signer:        common.HexToAddress("0x0000000000000000000000000000000000000002"),
-			Taker:         common.HexToAddress("0x0000000000000000000000000000000000000000"),
 			TokenID:       types.U256{Int: big.NewInt(123)},
 			MakerAmount:   decimal.NewFromInt(100),
 			TakerAmount:   decimal.NewFromInt(50),
 			Side:          "BUY",
-			Expiration:    types.U256{Int: big.NewInt(0)},
-			FeeRateBps:    decimal.NewFromInt(0),
-			Nonce:         types.U256{Int: big.NewInt(0)},
 			SignatureType: &sigType,
+			Timestamp:     1713398400000,
 		},
 		Signature: "0xsig",
 		Owner:     "builder-owner",
@@ -98,14 +95,11 @@ func TestBuildOrderPayloadRequiresSignatureAndOwner(t *testing.T) {
 			Salt:        types.U256{Int: big.NewInt(1)},
 			Maker:       common.HexToAddress("0x0000000000000000000000000000000000000001"),
 			Signer:      common.HexToAddress("0x0000000000000000000000000000000000000002"),
-			Taker:       common.HexToAddress("0x0000000000000000000000000000000000000000"),
 			TokenID:     types.U256{Int: big.NewInt(123)},
 			MakerAmount: decimal.NewFromInt(100),
 			TakerAmount: decimal.NewFromInt(50),
 			Side:        "BUY",
-			Expiration:  types.U256{Int: big.NewInt(0)},
-			FeeRateBps:  decimal.NewFromInt(0),
-			Nonce:       types.U256{Int: big.NewInt(0)},
+			Timestamp:   1,
 		},
 	}
 
