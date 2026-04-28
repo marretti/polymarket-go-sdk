@@ -42,53 +42,65 @@ func TestOrderManagementMethods(t *testing.T) {
 
 	t.Run("CancelAll", func(t *testing.T) {
 		doer := &staticDoer{
-			responses: map[string]string{"/cancel-all": `{"status":"OK","count":10}`},
+			responses: map[string]string{"/cancel-all": `{"canceled":["o1","o2"]}`},
 		}
 		client := &clientImpl{
 			httpClient: transport.NewClient(doer, "http://example"),
 		}
 		resp, err := client.CancelAll(ctx)
-		if err != nil || resp.Status != "OK" {
+		if err != nil {
 			t.Errorf("CancelAll failed: %v", err)
+		}
+		if len(resp.Canceled) != 2 {
+			t.Errorf("expected 2 canceled, got %d", len(resp.Canceled))
 		}
 	})
 
 	t.Run("CancelOrder", func(t *testing.T) {
 		doer := &staticDoer{
-			responses: map[string]string{"/order": `{"status":"OK"}`},
+			responses: map[string]string{"/order": `{"canceled":["o1"]}`},
 		}
 		client := &clientImpl{
 			httpClient: transport.NewClient(doer, "http://example"),
 		}
 		resp, err := client.CancelOrder(ctx, &clobtypes.CancelOrderRequest{OrderID: "o1"})
-		if err != nil || resp.Status != "OK" {
+		if err != nil {
 			t.Errorf("CancelOrder failed: %v", err)
+		}
+		if len(resp.Canceled) != 1 || resp.Canceled[0] != "o1" {
+			t.Errorf("expected canceled [o1], got %v", resp.Canceled)
 		}
 	})
 
 	t.Run("CancelOrders", func(t *testing.T) {
 		doer := &staticDoer{
-			responses: map[string]string{"/orders": `{"status":"OK"}`},
+			responses: map[string]string{"/orders": `{"canceled":["o1"]}`},
 		}
 		client := &clientImpl{
 			httpClient: transport.NewClient(doer, "http://example"),
 		}
 		resp, err := client.CancelOrders(ctx, &clobtypes.CancelOrdersRequest{OrderIDs: []string{"o1"}})
-		if err != nil || resp.Status != "OK" {
+		if err != nil {
 			t.Errorf("CancelOrders failed: %v", err)
+		}
+		if len(resp.Canceled) != 1 || resp.Canceled[0] != "o1" {
+			t.Errorf("expected canceled [o1], got %v", resp.Canceled)
 		}
 	})
 
 	t.Run("CancelMarketOrders", func(t *testing.T) {
 		doer := &staticDoer{
-			responses: map[string]string{"/cancel-market-orders": `{"status":"OK"}`},
+			responses: map[string]string{"/cancel-market-orders": `{"canceled":["o1"]}`},
 		}
 		client := &clientImpl{
 			httpClient: transport.NewClient(doer, "http://example"),
 		}
 		resp, err := client.CancelMarketOrders(ctx, &clobtypes.CancelMarketOrdersRequest{Market: "m1"})
-		if err != nil || resp.Status != "OK" {
+		if err != nil {
 			t.Errorf("CancelMarketOrders failed: %v", err)
+		}
+		if len(resp.Canceled) != 1 || resp.Canceled[0] != "o1" {
+			t.Errorf("expected canceled [o1], got %v", resp.Canceled)
 		}
 	})
 

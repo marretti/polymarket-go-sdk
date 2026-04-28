@@ -363,7 +363,8 @@ type (
 		Count       int               `json:"count"`
 	}
 	CancelMarketOrdersResponse struct {
-		Status string `json:"status"`
+		Canceled    []string          `json:"canceled,omitempty"`
+		NotCanceled map[string]string `json:"not_canceled,omitempty"`
 	}
 	TradesResponse struct {
 		Data       []Trade `json:"data"`
@@ -563,11 +564,11 @@ type (
 	}
 
 	TotalUserEarning struct {
-		Date         string `json:"date"`
-		AssetAddress string `json:"asset_address"`
-		MakerAddress string `json:"maker_address"`
-		Earnings     string `json:"earnings"`
-		AssetRate    string `json:"asset_rate"`
+		Date         string  `json:"date"`
+		AssetAddress string  `json:"asset_address"`
+		MakerAddress string  `json:"maker_address"`
+		Earnings     float64 `json:"earnings"`
+		AssetRate    float64 `json:"asset_rate"`
 	}
 
 	UserRewardsEarning struct {

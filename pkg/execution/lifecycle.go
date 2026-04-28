@@ -86,10 +86,13 @@ func EventFromCancelResponse(orderID string, cancel clobtypes.CancelResponse, so
 		return LifecycleEvent{}, errLifecycleOrderIDRequired
 	}
 
-	raw := strings.ToLower(strings.TrimSpace(cancel.Status))
 	state := LifecycleStateCanceled
-	if strings.Contains(raw, "reject") || strings.Contains(raw, "fail") || strings.Contains(raw, "error") {
+	raw := ""
+	if _, ok := cancel.NotCanceled[id]; ok {
 		state = LifecycleStateRejected
+		if msg, ok := cancel.NotCanceled[id]; ok {
+			raw = strings.ToLower(msg)
+		}
 	}
 
 	return LifecycleEvent{

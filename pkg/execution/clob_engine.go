@@ -131,7 +131,11 @@ func (e *CLOBEngine) Cancel(ctx context.Context, req CancelRequest) (CancelRespo
 	if err != nil {
 		return CancelResponse{}, err
 	}
-	return CancelResponse{Status: resp.Status, Canceled: resp.Canceled, NotCanceled: resp.NotCanceled, Attribution: attr}, nil
+	status := "ok"
+	if _, ok := resp.NotCanceled[orderID]; ok {
+		status = "failed"
+	}
+	return CancelResponse{Status: status, Attribution: attr}, nil
 }
 
 // Query fetches current order state by order id.

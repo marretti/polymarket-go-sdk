@@ -76,7 +76,7 @@ func TestEventFromOrderResponseRequiresOrderID(t *testing.T) {
 
 func TestEventFromCancelResponse(t *testing.T) {
 	event, err := EventFromCancelResponse("ord-2", clobtypes.CancelResponse{
-		Status: "ok",
+		Canceled: []string{"ord-2"},
 	}, LifecycleSourceCancel, time.Unix(1710000000, 0))
 	if err != nil {
 		t.Fatalf("event from cancel: %v", err)

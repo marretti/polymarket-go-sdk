@@ -112,7 +112,7 @@ func TestCLOBEngineCancelRequiresOrderID(t *testing.T) {
 
 func TestCLOBEngineCancelCallsCancelOrder(t *testing.T) {
 	fake := &fakeCLOBClient{
-		cancelResp: clobtypes.CancelResponse{Status: "ok"},
+		cancelResp: clobtypes.CancelResponse{Canceled: []string{"ord-1"}},
 	}
 	engine, err := NewCLOBEngine(fake)
 	if err != nil {
